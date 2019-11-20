@@ -1,0 +1,4 @@
+rootProject.name = 'vms-ms-fileprocessor'
+include 'file-producer'
+include 'return-file-consumer'
+

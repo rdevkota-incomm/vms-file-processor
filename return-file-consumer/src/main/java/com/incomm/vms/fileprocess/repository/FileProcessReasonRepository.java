@@ -1,0 +1,41 @@
+package com.incomm.vms.fileprocess.repository;
+
+import com.incomm.vms.fileprocess.model.FileProcessReasonMaster;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class FileProcessReasonRepository {
+    private final static Logger LOGGER = LoggerFactory.getLogger(FileProcessReasonRepository.class);
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    public FileProcessReasonMaster findByRejectReason(String rejectReason) {
+        FileProcessReasonMaster fileProcessReason = new FileProcessReasonMaster();
+        String sql = " SELECT vfr_reject_code, vfr_success_failure_flag "
+                + " FROM vms_fileprocess_rjreason_mast "
+                + "  WHERE upper(vfr_reject_reason) = upper(?)";
+        LOGGER.debug("Select sql being executed {}", sql);
+        LOGGER.debug("Select sql Parameter Values for rejectReason: {} ", rejectReason);
+        try {
+            return jdbcTemplate.queryForObject(sql, new Object[]{rejectReason},
+                    (rs, rowNum) -> {
+                        fileProcessReason.setRejectCode(rs.getString(1));
+                        fileProcessReason.setSuccessFailureFlag(rs.getString(2));
+                        fileProcessReason.setRejectReason(rejectReason);
+
+                        return fileProcessReason;
+                    });
+        } catch (EmptyResultDataAccessException e) {
+            LOGGER.debug("no record returned by the reject reason sql: {} for reason {}", sql, rejectReason);
+            fileProcessReason.setSuccessFailureFlag("N");
+            fileProcessReason.setRejectReason("Rejected Reason - " + rejectReason);
+        }
+        return fileProcessReason;
+    }
+}
