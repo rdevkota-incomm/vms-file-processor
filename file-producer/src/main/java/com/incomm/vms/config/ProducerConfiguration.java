@@ -1,9 +1,9 @@
-package com.incomm.vms.fileprocess.config;
+package com.incomm.vms.config;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.incomm.vms.fileprocess.service.ProducerService;
+import com.incomm.vms.service.ProducerService;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;

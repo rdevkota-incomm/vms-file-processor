@@ -5,20 +5,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileAggregateSummaryStore {
     private static Logger LOGGER = LoggerFactory.getLogger(FileAggregateSummaryStore.class);
-
     private static ConcurrentHashMap<String, FileAggregateSummary> summaryStore;
-
     static {
         summaryStore = new ConcurrentHashMap<>();
     }
 
     public static void upsertProducedRecordCount(String uuid, int totalRecordCount) {
+        LOGGER.info("Total message count:{} for file with uuid:{}", totalRecordCount, uuid );
         summaryStore.computeIfPresent(uuid, (k, v) -> {
             v.setTotalProducedRecordCount(totalRecordCount);
             return v;
@@ -26,10 +23,10 @@ public class FileAggregateSummaryStore {
 
         summaryStore.computeIfAbsent(uuid, v -> {
             FileAggregateSummary summary = new FileAggregateSummary();
-            List<String> panCodeList = new ArrayList<>();
+            summary.setListOfPanCodes(new ArrayList<>());
+            summary.setListOfDeletePanCodes(new ArrayList<>());
+
             summary.setTotalProducedRecordCount(totalRecordCount);
-            summary.setListOfPanCodes(panCodeList);
-            summary.setListOfDeletePanCodes(panCodeList);
             return summary;
         });
     }
@@ -43,6 +40,8 @@ public class FileAggregateSummaryStore {
 
         summaryStore.computeIfAbsent(uuid, v -> {
             FileAggregateSummary summary = new FileAggregateSummary();
+            summary.setListOfDeletePanCodes(new ArrayList<>());
+            summary.setListOfPanCodes(new ArrayList<>());
             summary.setTotalConsumedRecordCount(1);
             return summary;
         });
@@ -60,6 +59,8 @@ public class FileAggregateSummaryStore {
 
         summaryStore.computeIfAbsent(uuid, v -> {
             FileAggregateSummary summary = new FileAggregateSummary();
+            summary.setListOfDeletePanCodes(new ArrayList<>());
+            summary.setListOfPanCodes(new ArrayList<>());
             summary.setTotalConsumedRecordCount(1);
             summary.setPanCode(panCode);
             if (addToDeleteList) {
@@ -73,4 +74,11 @@ public class FileAggregateSummaryStore {
         return summaryStore.get(uuid);
     }
 
+    public static ConcurrentHashMap getAllSummaryStore() {
+        return summaryStore;
+    }
+
+    public static void evictCache(String uuid) {
+        summaryStore.remove(uuid);
+    }
 }

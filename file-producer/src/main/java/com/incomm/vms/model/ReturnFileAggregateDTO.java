@@ -1,4 +1,4 @@
-package com.incomm.vms.fileprocess.model;
+package com.incomm.vms.model;
 
 import com.google.gson.Gson;
 

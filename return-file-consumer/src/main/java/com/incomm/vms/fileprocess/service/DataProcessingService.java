@@ -79,21 +79,8 @@ public class DataProcessingService {
 
             returnFileDataRepository.save(instanceCode, fileName, messageHeaders.get(RECORD_NUMBER), returnFileRecord,
                     lineItemDetail);
-
             fileAggregationService.saveConsumedDetail(panCode, deletePanCode, messageHeaders);
-            // query line item detail to make sure the all the orders are completed before
-            // how do we aggregate this?
-            // record by record or scheduled job in the batch
-            // call the post back line item detail card level
-//            orderLineItemRepository.update(lineItemDetail, fileProcessReason);
-            // post back on order line item level
-//            orderDetailRepository.update(lineItemDetail, fileProcessReason);
-            // post back on order detail product level
-        }
-//        if (!deletePanList.isEmpty()) {
-//            String message = deleteCardRepository.delete(deletePanList);
-//            LOGGER.info("Received message from delete card SP: {} ", message);
-//        }
+         }
         LOGGER.info("Done processing");
     }
 }

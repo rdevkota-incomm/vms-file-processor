@@ -1,11 +1,11 @@
-package com.incomm.vms.fileprocess.service;
+package com.incomm.vms.service;
 
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import com.incomm.vms.fileprocess.model.ReturnFileAggregateDTO;
-import com.incomm.vms.fileprocess.model.ReturnFileDTO;
+import com.incomm.vms.model.ReturnFileAggregateDTO;
+import com.incomm.vms.model.ReturnFileDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.incomm.vms.fileprocess.config.Constants.*;
+import static com.incomm.vms.config.Constants.*;
 
 
 @Service

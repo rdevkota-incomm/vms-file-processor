@@ -4,9 +4,12 @@ import com.incomm.vms.fileprocess.model.FileProcessReasonMaster;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import static com.incomm.vms.fileprocess.config.Constants.RETURN_REASON_CACHE_NAME;
 
 @Repository
 public class FileProcessReasonRepository {
@@ -15,6 +18,7 @@ public class FileProcessReasonRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Cacheable(RETURN_REASON_CACHE_NAME)
     public FileProcessReasonMaster findByRejectReason(String rejectReason) {
         FileProcessReasonMaster fileProcessReason = new FileProcessReasonMaster();
         String sql = " SELECT vfr_reject_code, vfr_success_failure_flag "

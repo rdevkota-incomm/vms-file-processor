@@ -27,20 +27,6 @@ public class ConsumerService extends Thread {
         dataProcessingService.processRecords(returnFileDTO);
         acknowledgment.acknowledge();
     }
-//    public void consumeMessage(String payload) {
-//        Gson gson = new Gson();
-//        ReturnFileDTO returnFileDTO = gson.fromJson(payload, ReturnFileDTO.class);
-//        LOGGER.info("Received Message payload: {}", returnFileDTO.toString());
-//        dataProcessingService.processRecords(returnFileDTO);
-//    }
-
-//    @KafkaListener (topics = "${vms.printer-awk-aggregate.topic}")
-//    public void consumeAggregateMessage(String payload) {
-//        Gson gson = new Gson();
-//        ReturnFileAggregateDTO returnFileAggregateDTO = gson.fromJson(payload, ReturnFileAggregateDTO.class);
-//        LOGGER.info("Received Aggregate payload: {}", returnFileAggregateDTO.toString());
-//        fileAggregationService.saveTotalProducedCount(returnFileAggregateDTO);
-//    }
 
     @KafkaListener(topics = "${vms.printer-awk-aggregate.topic}")
     public void consumeAggregateMessage(ConsumerRecord<?, ?> consumerRecord, Acknowledgment acknowledgment) {

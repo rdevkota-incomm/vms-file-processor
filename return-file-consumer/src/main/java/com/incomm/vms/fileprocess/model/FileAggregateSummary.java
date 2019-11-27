@@ -2,9 +2,10 @@ package com.incomm.vms.fileprocess.model;
 
 import com.google.gson.Gson;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class FileAggregateSummary {
+public class FileAggregateSummary implements Serializable {
 
     private int totalProducedRecordCount;
     private int totalConsumedRecordCount;
