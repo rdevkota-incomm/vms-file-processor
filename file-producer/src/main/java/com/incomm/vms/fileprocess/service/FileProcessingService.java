@@ -27,7 +27,7 @@ public class FileProcessingService {
     private final static Logger LOGGER = LoggerFactory.getLogger(FileProcessingService.class);
 
     @Autowired
-    ProducerService producerService;
+    private ProducerService producerService;
 
     public void parseCsvFile(Path filePath, String fileName) throws IOException {
         LOGGER.info("File {} is being processed in path {}", fileName, filePath);
@@ -38,10 +38,10 @@ public class FileProcessingService {
         int totalRecordCount = 0;
         try (Reader reader = new FileReader(filePath.toFile() + "/" + fileName)) {
             MappingIterator<ReturnFileDTO> mi = oReader.readValues(reader);
-            Map<String, Long> orderDetail = new HashMap<>();
             while (mi.hasNext()) {
                 ReturnFileDTO returnFileDTO = mi.next();
-                produceRecord(returnFileDTO, uuid, totalRecordCount++, fileName);
+                totalRecordCount++;
+                produceRecord(returnFileDTO, uuid, totalRecordCount, fileName);
                 LOGGER.debug("Parsed RecordCount: {} with CSV line: \n {}", totalRecordCount, returnFileDTO.toString());
             }
         }
@@ -67,5 +67,4 @@ public class FileProcessingService {
         LOGGER.debug("Producing aggregate message with headers {} for uuid {}", fileAggregateDTO, uuid);
         producerService.produceAggregateMessage(fileAggregateDTO);
     }
-
 }
