@@ -1,4 +1,4 @@
-package com.incomm.vms.config;
+package com.incomm.vms.fileprocess.config;
 
 public class Constants {
     private Constants() {

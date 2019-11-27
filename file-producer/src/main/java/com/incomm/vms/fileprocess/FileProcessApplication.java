@@ -1,6 +1,6 @@
-package com.incomm.vms;
+package com.incomm.vms.fileprocess;
 
-import com.incomm.vms.service.FileWatcherService;
+import com.incomm.vms.fileprocess.service.FileWatcherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +13,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@ComponentScan("com.incomm.vms.com.incomm.vms.fileprocess")
+@ComponentScan("com.incomm.vms.fileprocess")
 @EnableTransactionManagement
-@EnableJdbcRepositories(basePackages = "com.incomm.vms.com.incomm.vms.fileprocess.repository")
+@EnableJdbcRepositories(basePackages = "com.incomm.vms.fileprocess.repository")
 @EnableScheduling
 public class FileProcessApplication implements CommandLineRunner {
     private static Logger LOGGER = LoggerFactory.getLogger(FileProcessApplication.class);

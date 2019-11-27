@@ -1,4 +1,4 @@
-package com.incomm.vms.model;
+package com.incomm.vms.fileprocess.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

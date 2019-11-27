@@ -1,4 +1,4 @@
-package com.incomm.vms.service;
+package com.incomm.vms.fileprocess.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

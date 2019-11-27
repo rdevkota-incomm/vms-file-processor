@@ -1,4 +1,4 @@
-package com.incomm.vms.kafka;
+package com.incomm.vms.fileprocess.kafka;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.serialization.Deserializer;

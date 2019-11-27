@@ -1,7 +1,7 @@
-package com.incomm.vms.service;
+package com.incomm.vms.fileprocess.service;
 
-import com.incomm.vms.model.ReturnFileAggregateDTO;
-import com.incomm.vms.model.ReturnFileDTO;
+import com.incomm.vms.fileprocess.model.ReturnFileAggregateDTO;
+import com.incomm.vms.fileprocess.model.ReturnFileDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
