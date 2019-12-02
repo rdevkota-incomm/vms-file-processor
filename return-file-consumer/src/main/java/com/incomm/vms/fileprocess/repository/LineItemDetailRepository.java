@@ -47,8 +47,8 @@ public class LineItemDetailRepository {
                         return lineItemDetail;
                     });
         } catch (EmptyResultDataAccessException e) {
-            LOGGER.error("There is no record returned by the sql: {} ", sql);
-            LOGGER.error("Select sql Parameter Values for serialNumber: {} instanceCode: {}",
+            LOGGER.debug("There is no record returned by the sql: {} ", sql);
+            LOGGER.debug("Select sql Parameter Values for serialNumber: {} instanceCode: {}",
                     serialNumber, instanceCode);
 
         }

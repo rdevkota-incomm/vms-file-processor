@@ -3,16 +3,16 @@ package com.incomm.vms.fileprocess.model;
 import com.google.gson.Gson;
 
 public class ReturnFileAggregateDTO {
-    private String uuid;
+    private String correlationId;
     private int totalRecordCount;
     private String fileName;
 
-    public String getUuid() {
-        return uuid;
+    public String getCorrelationId() {
+        return correlationId;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setCorrelationId(String correlationId) {
+        this.correlationId = correlationId;
     }
 
     public int getTotalRecordCount() {

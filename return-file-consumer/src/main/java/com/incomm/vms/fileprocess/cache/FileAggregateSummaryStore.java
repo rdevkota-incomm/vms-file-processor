@@ -14,14 +14,14 @@ public class FileAggregateSummaryStore {
         summaryStore = new ConcurrentHashMap<>();
     }
 
-    public static void upsertProducedRecordCount(String uuid, int totalRecordCount) {
-        LOGGER.info("Total message count:{} for file with uuid:{}", totalRecordCount, uuid );
-        summaryStore.computeIfPresent(uuid, (k, v) -> {
+    public static void upsertProducedRecordCount(String correlationId, int totalRecordCount) {
+        LOGGER.info("Total message count:{} for file with correlationId:{}", totalRecordCount, correlationId );
+        summaryStore.computeIfPresent(correlationId, (k, v) -> {
             v.setTotalProducedRecordCount(totalRecordCount);
             return v;
         });
 
-        summaryStore.computeIfAbsent(uuid, v -> {
+        summaryStore.computeIfAbsent(correlationId, v -> {
             FileAggregateSummary summary = new FileAggregateSummary();
             summary.setListOfPanCodes(new ArrayList<>());
             summary.setListOfDeletePanCodes(new ArrayList<>());
@@ -31,14 +31,14 @@ public class FileAggregateSummaryStore {
         });
     }
 
-    public static void upsertConsumedFailedRecord(String uuid) {
-        summaryStore.computeIfPresent(uuid, (k, v) -> {
+    public static void upsertConsumedFailedRecord(String correlationId) {
+        summaryStore.computeIfPresent(correlationId, (k, v) -> {
             int consumedCount = v.getTotalConsumedRecordCount();
             v.setTotalConsumedRecordCount(consumedCount + 1);
             return v;
         });
 
-        summaryStore.computeIfAbsent(uuid, v -> {
+        summaryStore.computeIfAbsent(correlationId, v -> {
             FileAggregateSummary summary = new FileAggregateSummary();
             summary.setListOfDeletePanCodes(new ArrayList<>());
             summary.setListOfPanCodes(new ArrayList<>());
@@ -46,8 +46,8 @@ public class FileAggregateSummaryStore {
             return summary;
         });
     }
-    public static void upsertConsumedRecord(String uuid, String panCode, Boolean addToDeleteList) {
-        summaryStore.computeIfPresent(uuid, (k, v) -> {
+    public static void upsertConsumedRecord(String correlationId, String panCode, Boolean addToDeleteList) {
+        summaryStore.computeIfPresent(correlationId, (k, v) -> {
             int consumedCount = v.getTotalConsumedRecordCount();
             v.setTotalConsumedRecordCount(consumedCount + 1);
             v.setPanCode(panCode);
@@ -57,7 +57,7 @@ public class FileAggregateSummaryStore {
             return v;
         });
 
-        summaryStore.computeIfAbsent(uuid, v -> {
+        summaryStore.computeIfAbsent(correlationId, v -> {
             FileAggregateSummary summary = new FileAggregateSummary();
             summary.setListOfDeletePanCodes(new ArrayList<>());
             summary.setListOfPanCodes(new ArrayList<>());
@@ -70,15 +70,15 @@ public class FileAggregateSummaryStore {
         });
     }
 
-    public static FileAggregateSummary getSummaryStore(String uuid) {
-        return summaryStore.get(uuid);
+    public static FileAggregateSummary getSummaryStore(String correlationId) {
+        return summaryStore.get(correlationId);
     }
 
     public static ConcurrentHashMap getAllSummaryStore() {
         return summaryStore;
     }
 
-    public static void evictCache(String uuid) {
-        summaryStore.remove(uuid);
+    public static void evictCache(String correlationId) {
+        summaryStore.remove(correlationId);
     }
 }

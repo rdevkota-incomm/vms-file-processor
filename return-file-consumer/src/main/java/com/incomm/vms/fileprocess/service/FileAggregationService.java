@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
-import static com.incomm.vms.fileprocess.config.Constants.UU_ID;
+import static com.incomm.vms.fileprocess.config.Constants.CORRELATION_ID;
 
 @Service
 public class FileAggregationService {
@@ -37,37 +37,37 @@ public class FileAggregationService {
     private RedisCacheRepository redisCacheRepository;
 
     public void saveTotalProducedCount(ReturnFileAggregateDTO fileAggregateDTO) {
-        String uuid = fileAggregateDTO.getUuid();
+        String correlationId = fileAggregateDTO.getCorrelationId();
         LOGGER.debug("Saving aggregate DTO {}", fileAggregateDTO.toString());
-        FileAggregateSummaryStore.upsertProducedRecordCount(uuid, fileAggregateDTO.getTotalRecordCount());
+        FileAggregateSummaryStore.upsertProducedRecordCount(correlationId, fileAggregateDTO.getTotalRecordCount());
         syncCache();
-        if (isConsumptionComplete(uuid)) {
-            aggregateSummary(uuid);
+        if (isConsumptionComplete(correlationId)) {
+            aggregateSummary(correlationId);
         }
     }
 
     public void saveConsumedDetail(String panCode, Boolean deleteRequired, Map<String, String> headers) {
-        String uuid = headers.get(UU_ID);
+        String correlationId = headers.get(CORRELATION_ID);
         LOGGER.debug("Saving consumer DTO with header {}", headers);
-        FileAggregateSummaryStore.upsertConsumedRecord(uuid, panCode, deleteRequired);
+        FileAggregateSummaryStore.upsertConsumedRecord(correlationId, panCode, deleteRequired);
         syncCache();
-        if (isConsumptionComplete(uuid)) {
-            aggregateSummary(uuid);
+        if (isConsumptionComplete(correlationId)) {
+            aggregateSummary(correlationId);
         }
     }
 
     public void addConsumerCountForFailedRecord(Map<String, String> headers) {
-        String uuid = headers.get(UU_ID);
+        String correlationId = headers.get(CORRELATION_ID);
         LOGGER.debug("Saving consumer DTO with header {}", headers);
-        FileAggregateSummaryStore.upsertConsumedFailedRecord(uuid);
+        FileAggregateSummaryStore.upsertConsumedFailedRecord(correlationId);
         syncCache();
-        if (isConsumptionComplete(uuid)) {
-            aggregateSummary(uuid);
+        if (isConsumptionComplete(correlationId)) {
+            aggregateSummary(correlationId);
         }
     }
 
-    private void aggregateSummary(String uuid) {
-        FileAggregateSummary summary = FileAggregateSummaryStore.getSummaryStore(uuid);
+    private void aggregateSummary(String correlationId) {
+        FileAggregateSummary summary = FileAggregateSummaryStore.getSummaryStore(correlationId);
         LOGGER.info("Will update product detail .. ");
         // get aggregate info
         if (!summary.getListOfPanCodes().isEmpty()) {
@@ -82,7 +82,7 @@ public class FileAggregationService {
             deleteCardRepository.delete(summary.getListOfDeletePanCodes());
         }
         // clean up cache once completed
-        completeProcessing(uuid);
+        completeProcessing(correlationId);
     }
 
     private void updateOrder(OrderDetailAggregate orderDetailAggregate) {
@@ -94,16 +94,16 @@ public class FileAggregationService {
                 orderDetailAggregate.getPartnerId());
     }
 
-    private boolean isConsumptionComplete(String uuid) {
-        FileAggregateSummary summary = FileAggregateSummaryStore.getSummaryStore(uuid);
+    private boolean isConsumptionComplete(String correlationId) {
+        FileAggregateSummary summary = FileAggregateSummaryStore.getSummaryStore(correlationId);
         LOGGER.info("summary.getTotalConsumedRecordCount(): {}", summary.getTotalConsumedRecordCount());
         LOGGER.info("summary.getTotalProducedRecordCount(): {}", summary.getTotalProducedRecordCount());
         return summary.getTotalConsumedRecordCount() >= summary.getTotalProducedRecordCount();
     }
 
-    private void completeProcessing(String uuid) {
-        FileAggregateSummaryStore.evictCache(uuid);
-        syncCache();
+    private void completeProcessing(String correlationId) {
+        FileAggregateSummaryStore.evictCache(correlationId);
+//        syncCache();
     }
 
     private void syncCache() {
@@ -111,7 +111,7 @@ public class FileAggregationService {
             RedisCache cache = new RedisCache(1L, FileAggregateSummaryStore.getAllSummaryStore());
             redisCacheRepository.saveIntoCache(cache);
         } catch (Exception e) {
-            LOGGER.error("Redis exception occured: {}", e.getLocalizedMessage(), e);
+            LOGGER.warn("Redis exception occured: {}", e.getLocalizedMessage(), e);
         }
     }
 }

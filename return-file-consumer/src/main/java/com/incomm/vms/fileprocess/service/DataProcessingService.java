@@ -62,7 +62,7 @@ public class DataProcessingService {
         }
         if (lineItemDetail == null) {
             errorProcessingService.processNoSerilNumberFoundError(returnFileRecord, fileName);
-            fileAggregationService.addConsumerCountForFailedRecord(messageHeaders);
+//            fileAggregationService.addConsumerCountForFailedRecord(messageHeaders);
         } else {
             String panCode = lineItemDetail.getPanCode();
             boolean deletePanCode = false;

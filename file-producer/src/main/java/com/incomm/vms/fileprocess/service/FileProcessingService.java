@@ -21,7 +21,6 @@ import java.util.UUID;
 
 import static com.incomm.vms.fileprocess.config.Constants.*;
 
-
 @Service
 public class FileProcessingService {
     private final static Logger LOGGER = LoggerFactory.getLogger(FileProcessingService.class);
@@ -34,37 +33,37 @@ public class FileProcessingService {
         CsvMapper csvMapper = new CsvMapper();
         CsvSchema schema = CsvSchema.emptySchema().withHeader();
         ObjectReader oReader = csvMapper.reader(ReturnFileDTO.class).with(schema);
-        UUID uuid = UUID.randomUUID();
+        UUID correlationId = UUID.randomUUID();
         int totalRecordCount = 0;
         try (Reader reader = new FileReader(filePath.toFile() + "/" + fileName)) {
             MappingIterator<ReturnFileDTO> mi = oReader.readValues(reader);
             while (mi.hasNext()) {
                 ReturnFileDTO returnFileDTO = mi.next();
                 totalRecordCount++;
-                produceRecord(returnFileDTO, uuid, totalRecordCount, fileName);
+                produceRecord(returnFileDTO, correlationId, totalRecordCount, fileName);
                 LOGGER.debug("Parsed RecordCount: {} with CSV line: \n {}", totalRecordCount, returnFileDTO.toString());
             }
         }
-        LOGGER.info("Done processing File {} in path {} with UUID {}", fileName, filePath, uuid);
-        produceAggregate(uuid, totalRecordCount, fileName);
+        LOGGER.info("Done processing File {} in path {} with CorrelationId {}", fileName, filePath, correlationId);
+        produceAggregate(correlationId, totalRecordCount, fileName);
     }
 
-    private void produceRecord(ReturnFileDTO returnFileData, UUID uuid, int recordCount, String fileName) {
+    private void produceRecord(ReturnFileDTO returnFileData, UUID correlationId, int recordCount, String fileName) {
         Map<String, String> headers = new HashMap<>();
         headers.put(FILE_NAME, fileName);
         headers.put(RECORD_NUMBER, String.valueOf(recordCount));
-        headers.put(UU_ID, uuid.toString());
+        headers.put(CORRELATION_ID, correlationId.toString());
         returnFileData.setHeaders(headers);
         LOGGER.debug("Producing message with headers {}", headers);
         producerService.produceMessage(returnFileData);
     }
 
-    private void produceAggregate(UUID uuid, int totalRecordCount, String fileName) {
+    private void produceAggregate(UUID correlationId, int totalRecordCount, String fileName) {
         ReturnFileAggregateDTO fileAggregateDTO = new ReturnFileAggregateDTO();
         fileAggregateDTO.setFileName(fileName);
         fileAggregateDTO.setTotalRecordCount(totalRecordCount);
-        fileAggregateDTO.setUuid(uuid.toString());
-        LOGGER.debug("Producing aggregate message with headers {} for uuid {}", fileAggregateDTO, uuid);
+        fileAggregateDTO.setCorrelationId(correlationId.toString());
+        LOGGER.debug("Producing aggregate message with headers {} for correlationId: {}", fileAggregateDTO, correlationId);
         producerService.produceAggregateMessage(fileAggregateDTO);
     }
 }
