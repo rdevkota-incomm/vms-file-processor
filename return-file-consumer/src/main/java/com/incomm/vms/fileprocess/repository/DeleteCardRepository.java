@@ -1,6 +1,7 @@
 package com.incomm.vms.fileprocess.repository;
 
 import oracle.jdbc.OracleTypes;
+import oracle.sql.ARRAY;
 import oracle.sql.ArrayDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ import java.sql.SQLException;
 import java.sql.Struct;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,20 +35,53 @@ public class DeleteCardRepository {
     private JdbcTemplate jdbcTemplate;
 
     public String delete(List<String> cardPanList) {
-//        String outValue;
-//        ArrayDescriptor  arrayDescriptor = ArrayDescriptor.createDescriptor("shuffle_array_typ");
         String[] panList = cardPanList.stream().toArray(String[]::new);
-        SimpleJdbcCall jdbcCall =  new SimpleJdbcCall(jdbcTemplate)
-                .withProcedureName("delete_cards")
-                .withCatalogName("VMSB2BAPI")
-                .declareParameters(
-                        new SqlParameter("p_card_nos_in", OracleTypes.ARRAY, "shuffle_array_typ"),
-                        new SqlOutParameter("p_resp_msg_out", Types.VARCHAR));
 
-        SqlParameterSource in = new MapSqlParameterSource().addValue("p_card_nos_in", cardPanList );
-        Map<String, Object> simpleJdbcCallResult = jdbcCall.execute(in);
-        return simpleJdbcCallResult.get("p_resp_msg_out").toString();
+
+
+        List<SqlParameter> parameters = Arrays.asList(new SqlParameter(OracleTypes.ARRAY),
+                new SqlOutParameter("p_resp_msg_out", Types.VARCHAR));
+        Map<String, Object> callResult = jdbcTemplate.call(new CallableStatementCreator() {
+            @Override
+            public CallableStatement createCallableStatement(Connection con) throws SQLException {
+//                Array aArray = con.createArrayOf("VARCHAR", panList);
+                ArrayDescriptor des = ArrayDescriptor.createDescriptor("p_card_nos_in", con);
+                Array array = new ARRAY(des, con, cardPanList.toArray());
+                CallableStatement callableStatement = con.prepareCall("{call vmsb2bapi.delete_cards (?, ?)}");
+                callableStatement.setArray(1, array);
+                callableStatement.registerOutParameter(2, Types.VARCHAR);
+                return callableStatement;
+            }
+        }, parameters);
+
+//        String[] panList = cardPanList.stream().toArray(String[]::new);
+//        SimpleJdbcCall jdbcCall =  new SimpleJdbcCall(jdbcTemplate)
+//                .withProcedureName("delete_cards")
+//                .withCatalogName("VMSB2BAPI")
+//                .declareParameters(
+//                        new SqlParameter("p_card_nos_in", OracleTypes.ARRAY, "shuffle_array_typ"),
+//                        new SqlOutParameter("p_resp_msg_out", Types.VARCHAR));
+//
+//        SqlParameterSource in = new MapSqlParameterSource().addValue("p_card_nos_in", cardPanList );
+//        Map<String, Object> simpleJdbcCallResult = jdbcCall.execute(in);
+        return callResult.get("p_resp_msg_out").toString();
     }
+
+//    public String delete(List<String> cardPanList) {
+////        String outValue;
+////        ArrayDescriptor  arrayDescriptor = ArrayDescriptor.createDescriptor("shuffle_array_typ");
+//        String[] panList = cardPanList.stream().toArray(String[]::new);
+//        SimpleJdbcCall jdbcCall =  new SimpleJdbcCall(jdbcTemplate)
+//                .withProcedureName("delete_cards")
+//                .withCatalogName("VMSB2BAPI")
+//                .declareParameters(
+//                        new SqlParameter("p_card_nos_in", OracleTypes.ARRAY, "shuffle_array_typ"),
+//                        new SqlOutParameter("p_resp_msg_out", Types.VARCHAR));
+//
+//        SqlParameterSource in = new MapSqlParameterSource().addValue("p_card_nos_in", cardPanList );
+//        Map<String, Object> simpleJdbcCallResult = jdbcCall.execute(in);
+//        return simpleJdbcCallResult.get("p_resp_msg_out").toString();
+//    }
 
 //    public String delete1(List<String> cardPanList) {
 //

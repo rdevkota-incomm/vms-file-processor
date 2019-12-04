@@ -9,6 +9,8 @@ public class FileAggregateSummary implements Serializable {
 
     private int totalProducedRecordCount;
     private int totalConsumedRecordCount;
+    private long completionTime;
+    private String fileName;
 
     private List<String> listOfPanCodes;
     private List<String> listOfDeletePanCodes;
@@ -51,6 +53,22 @@ public class FileAggregateSummary implements Serializable {
 
     public void setDeletePanCode(String panCode) {
         this.listOfDeletePanCodes.add(panCode);
+    }
+
+    public long getCompletionTime() {
+        return completionTime;
+    }
+
+    public void setCompletionTime(long completionTime) {
+        this.completionTime = completionTime;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     @Override

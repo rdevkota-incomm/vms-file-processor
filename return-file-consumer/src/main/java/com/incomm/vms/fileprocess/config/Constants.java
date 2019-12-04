@@ -9,6 +9,6 @@ public class Constants {
     public static final String RECORD_NUMBER = "RECORD_NUMBER";
     public static final String CORRELATION_ID = "CORRELATION_ID";
 
-    public final static String RETURN_REASON_CACHE_NAME = "returnReasons";
-    public final static String AGGREGATE_SUMMARY = "AGGREGATE_SUMMARY";
+    public final static String RETURN_REASON_CACHE_NAME = "RETURN_REASONS_CACHE";
+    public final static String AGGREGATE_SUMMARY_CACHE_KEY = "VMS_AGGREGATE_SUMMARY";
 }
