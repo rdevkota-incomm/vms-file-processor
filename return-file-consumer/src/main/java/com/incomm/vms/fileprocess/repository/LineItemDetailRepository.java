@@ -1,6 +1,6 @@
 package com.incomm.vms.fileprocess.repository;
 
-import com.incomm.vms.fileprocess.model.FileProcessReasonMaster;
+import com.incomm.vms.fileprocess.model.RejectReasonMaster;
 import com.incomm.vms.fileprocess.model.LineItemDetail;
 import com.incomm.vms.fileprocess.model.ReturnFileDTO;
 import org.slf4j.Logger;
@@ -55,7 +55,7 @@ public class LineItemDetailRepository {
         return null;
     }
 
-    public int update(String serialNUmber, String panCode, FileProcessReasonMaster fileProcessReason) {
+    public int update(String serialNUmber, String panCode, RejectReasonMaster fileProcessReason) {
         String sql = " UPDATE vms_line_item_dtl SET "
                 + " vli_reject_code = ? ,"
                 + " vli_reject_reason = ? ,"
@@ -77,7 +77,7 @@ public class LineItemDetailRepository {
                 panCode);
     }
 
-    public int update(ReturnFileDTO returnFileRecord, LineItemDetail lineItemDetail, FileProcessReasonMaster fileProcessReason) {
+    public int update(ReturnFileDTO returnFileRecord, LineItemDetail lineItemDetail, RejectReasonMaster fileProcessReason) {
         String sql = " UPDATE vms_line_item_dtl SET "
                 + " vli_reject_code = ? "
                 + " vli_reject_reason = ? "

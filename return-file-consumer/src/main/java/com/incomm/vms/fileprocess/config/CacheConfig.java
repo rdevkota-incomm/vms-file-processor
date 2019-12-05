@@ -9,7 +9,7 @@ import static com.incomm.vms.fileprocess.config.Constants.RETURN_REASON_CACHE_NA
 
 @Configuration
 @EnableCaching
-public class CachingConfig {
+public class CacheConfig {
 
     @Bean
     public CacheManager cacheManager() {

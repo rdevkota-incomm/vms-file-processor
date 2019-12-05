@@ -1,6 +1,7 @@
 package com.incomm.vms.fileprocess.controller;
 
 import com.incomm.vms.fileprocess.cache.FileAggregateSummaryStore;
+import com.incomm.vms.fileprocess.model.FileAggregateSummary;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,6 +16,13 @@ public class ConsumerController {
     @GetMapping("/getall")
     @ResponseBody
     public ConcurrentHashMap getAllConsumtionDetails() {
+        return FileAggregateSummaryStore.getAllSummaryStore();
+    }
+
+    @GetMapping("/resetCache")
+    public ConcurrentHashMap resetSummaryStore() {
+        FileAggregateSummaryStore.getAllSummaryStore().clear();
+        FileAggregateSummaryStore.syncCache();
         return FileAggregateSummaryStore.getAllSummaryStore();
     }
 

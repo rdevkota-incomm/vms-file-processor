@@ -2,7 +2,7 @@ package com.incomm.vms.fileprocess.model;
 
 import com.google.gson.Gson;
 
-public class ReturnFileAggregateDTO {
+public class FileAggregateDTO {
     private String correlationId;
     private int totalRecordCount;
     private String fileName;

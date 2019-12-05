@@ -1,8 +1,5 @@
 package com.incomm.vms.fileprocess.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.incomm.vms.fileprocess.service.ConsumerService;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -16,6 +13,9 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.AbstractMessageListenerContainer;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Configuration

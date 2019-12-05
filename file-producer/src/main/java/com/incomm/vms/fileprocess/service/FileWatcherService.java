@@ -3,6 +3,7 @@ package com.incomm.vms.fileprocess.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,17 +18,22 @@ import java.nio.file.WatchService;
 @Service
 public class FileWatcherService {
     private final static Logger LOGGER = LoggerFactory.getLogger(FileWatcherService.class);
-    private FileProcessingService fileProcessingService;
 
     @Autowired
-    public FileWatcherService(FileProcessingService fileProcessingService) {
-        this.fileProcessingService = fileProcessingService;
-    }
+    private FileProcessingService fileProcessingService;
+
+    @Value("${vms.printer-ack.monitor.folder}")
+    private String monitorFolder;
+
+//    @Autowired
+//    public FileWatcherService(FileProcessingService fileProcessingService) {
+//        this.fileProcessingService = fileProcessingService;
+//    }
 
     public void monitorFolder() throws IOException, InterruptedException {
-        LOGGER.info("File is being monitored");
+        LOGGER.info("File is being monitored under {} folder", monitorFolder);
         WatchService watchService = FileSystems.getDefault().newWatchService();
-        Path filePath = Paths.get("C:\\Users\\rdevkota\\programs\\return-files");
+        Path filePath = Paths.get(monitorFolder);
 
         filePath.register(watchService, StandardWatchEventKinds.ENTRY_CREATE);
 

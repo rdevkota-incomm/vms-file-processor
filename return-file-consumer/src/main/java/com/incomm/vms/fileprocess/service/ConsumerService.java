@@ -1,7 +1,7 @@
 package com.incomm.vms.fileprocess.service;
 
 import com.google.gson.Gson;
-import com.incomm.vms.fileprocess.model.ReturnFileAggregateDTO;
+import com.incomm.vms.fileprocess.model.FileAggregateDTO;
 import com.incomm.vms.fileprocess.model.ReturnFileDTO;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
@@ -32,9 +32,9 @@ public class ConsumerService extends Thread {
     public void consumeAggregateMessage(ConsumerRecord<?, ?> consumerRecord, Acknowledgment acknowledgment) {
         Gson gson = new Gson();
         String payload = consumerRecord.value().toString();
-        ReturnFileAggregateDTO returnFileAggregateDTO = gson.fromJson(payload, ReturnFileAggregateDTO.class);
-        LOGGER.info("Received Aggregate payload: {}", returnFileAggregateDTO.toString());
-        fileAggregationService.saveTotalProducedCount(returnFileAggregateDTO);
+        FileAggregateDTO fileAggregateDTO = gson.fromJson(payload, FileAggregateDTO.class);
+        LOGGER.info("Received Aggregate payload: {}", fileAggregateDTO.toString());
+        fileAggregationService.saveTotalProducedCount(fileAggregateDTO);
         acknowledgment.acknowledge();
     }
 }

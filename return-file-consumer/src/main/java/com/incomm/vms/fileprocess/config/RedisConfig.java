@@ -1,12 +1,9 @@
 package com.incomm.vms.fileprocess.config;
 
-import com.incomm.vms.fileprocess.redis.CachePublisher;
-import com.incomm.vms.fileprocess.repository.RedisCachePublisherService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 
@@ -25,16 +22,4 @@ public class RedisConfig {
         template.setValueSerializer(new GenericToStringSerializer<Object>(Object.class));
         return template;
     }
-
-//    @Bean
-//    RedisMessageListenerContainer redisContainer() {
-//        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-//        container.setConnectionFactory(jedisConnectionFactory());
-//        return container;
-//    }
-//
-//    @Bean
-//    CachePublisher redisPublisher() {
-//        return new RedisCachePublisherService(redisTemplate());
-//    }
 }

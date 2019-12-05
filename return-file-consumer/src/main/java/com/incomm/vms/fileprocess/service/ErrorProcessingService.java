@@ -1,6 +1,6 @@
 package com.incomm.vms.fileprocess.service;
 
-import com.incomm.vms.fileprocess.model.FileProcessReasonMaster;
+import com.incomm.vms.fileprocess.model.RejectReasonMaster;
 import com.incomm.vms.fileprocess.model.ReturnFileDTO;
 import com.incomm.vms.fileprocess.model.ReturnFileErrorData;
 import com.incomm.vms.fileprocess.repository.FileProcessReasonRepository;
@@ -19,7 +19,7 @@ public class ErrorProcessingService {
     private ReturnFileErrorRepository returnFileErrorRepository;
 
     public void processError(ReturnFileDTO returnFileRecord, String fileName, String errorMessage) {
-        FileProcessReasonMaster fileProcessReason = fileProcessReasonRepository.findByRejectReason(errorMessage);
+        RejectReasonMaster fileProcessReason = fileProcessReasonRepository.findByRejectReason(errorMessage);
 
         ReturnFileErrorData returnFileErrorData = new ReturnFileErrorData();
         returnFileErrorData.setFileName(fileName);

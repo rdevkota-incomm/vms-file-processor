@@ -1,6 +1,6 @@
 package com.incomm.vms.fileprocess.service;
 
-import com.incomm.vms.fileprocess.model.FileProcessReasonMaster;
+import com.incomm.vms.fileprocess.model.RejectReasonMaster;
 import com.incomm.vms.fileprocess.model.LineItemDetail;
 import com.incomm.vms.fileprocess.model.ReturnFileDTO;
 import com.incomm.vms.fileprocess.repository.CardIssuanceStatusRepository;
@@ -66,7 +66,7 @@ public class DataProcessingService {
         } else {
             String panCode = lineItemDetail.getPanCode();
             boolean deletePanCode = false;
-            FileProcessReasonMaster fileProcessReason = fileProcessReasonRepository.findByRejectReason(returnFileRecord.getRejectReason());
+            RejectReasonMaster fileProcessReason = fileProcessReasonRepository.findByRejectReason(returnFileRecord.getRejectReason());
             lineItemDetailRepository.update(returnFileRecord.getSerialNumber(), panCode, fileProcessReason);
 
             if ("Y".equalsIgnoreCase(fileProcessReason.getSuccessFailureFlag())) {

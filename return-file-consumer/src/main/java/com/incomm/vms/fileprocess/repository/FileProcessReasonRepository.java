@@ -1,6 +1,6 @@
 package com.incomm.vms.fileprocess.repository;
 
-import com.incomm.vms.fileprocess.model.FileProcessReasonMaster;
+import com.incomm.vms.fileprocess.model.RejectReasonMaster;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,8 @@ public class FileProcessReasonRepository {
     private JdbcTemplate jdbcTemplate;
 
     @Cacheable(RETURN_REASON_CACHE_NAME)
-    public FileProcessReasonMaster findByRejectReason(String rejectReason) {
-        FileProcessReasonMaster fileProcessReason = new FileProcessReasonMaster();
+    public RejectReasonMaster findByRejectReason(String rejectReason) {
+        RejectReasonMaster fileProcessReason = new RejectReasonMaster();
         String sql = " SELECT vfr_reject_code, vfr_success_failure_flag "
                 + " FROM vms_fileprocess_rjreason_mast "
                 + "  WHERE upper(vfr_reject_reason) = upper(?)";

@@ -2,7 +2,7 @@ package com.incomm.vms.fileprocess.model;
 
 import com.google.gson.Gson;
 
-public class FileProcessReasonMaster {
+public class RejectReasonMaster {
     private String rejectCode;
     private String successFailureFlag;
     private String rejectReason;
