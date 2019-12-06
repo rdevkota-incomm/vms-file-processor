@@ -34,38 +34,51 @@ public class DeleteCardRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public String delete(List<String> cardPanList) {
-        String[] panList = cardPanList.stream().toArray(String[]::new);
+    public String deleteCards(List<String> cardPanList) {
 
-
-
-        List<SqlParameter> parameters = Arrays.asList(new SqlParameter(OracleTypes.ARRAY),
-                new SqlOutParameter("p_resp_msg_out", Types.VARCHAR));
-        Map<String, Object> callResult = jdbcTemplate.call(new CallableStatementCreator() {
-            @Override
-            public CallableStatement createCallableStatement(Connection con) throws SQLException {
-//                Array aArray = con.createArrayOf("VARCHAR", panList);
-                ArrayDescriptor des = ArrayDescriptor.createDescriptor("p_card_nos_in", con);
-                Array array = new ARRAY(des, con, cardPanList.toArray());
-                CallableStatement callableStatement = con.prepareCall("{call vmsb2bapi.delete_cards (?, ?)}");
-                callableStatement.setArray(1, array);
-                callableStatement.registerOutParameter(2, Types.VARCHAR);
-                return callableStatement;
-            }
-        }, parameters);
-
-//        String[] panList = cardPanList.stream().toArray(String[]::new);
-//        SimpleJdbcCall jdbcCall =  new SimpleJdbcCall(jdbcTemplate)
-//                .withProcedureName("delete_cards")
+        SimpleJdbcCall jdbcCall =  new SimpleJdbcCall(jdbcTemplate)
+                .withProcedureName("delete_card")
 //                .withCatalogName("VMSB2BAPI")
-//                .declareParameters(
-//                        new SqlParameter("p_card_nos_in", OracleTypes.ARRAY, "shuffle_array_typ"),
-//                        new SqlOutParameter("p_resp_msg_out", Types.VARCHAR));
-//
-//        SqlParameterSource in = new MapSqlParameterSource().addValue("p_card_nos_in", cardPanList );
-//        Map<String, Object> simpleJdbcCallResult = jdbcCall.execute(in);
-        return callResult.get("p_resp_msg_out").toString();
+                .declareParameters(
+                        new SqlParameter("PAN_CODE", Types.VARCHAR),
+                        new SqlOutParameter("RESPONSE_MESSAGE", Types.VARCHAR));
+
+        SqlParameterSource in = new MapSqlParameterSource().addValue("PAN_CODE", "pW99IjxXwjjyqfdSHwUEqkNxtVyDkROltGHN7Cuuplc=" );
+        Map<String, Object> simpleJdbcCallResult = jdbcCall.execute(in);
+        return simpleJdbcCallResult.get("p_resp_msg_out").toString();
     }
+//    public String delete(List<String> cardPanList) {
+//        String[] panList = cardPanList.stream().toArray(String[]::new);
+//
+//
+//
+//        List<SqlParameter> parameters = Arrays.asList(new SqlParameter(OracleTypes.ARRAY),
+//                new SqlOutParameter("p_resp_msg_out", Types.VARCHAR));
+//        Map<String, Object> callResult = jdbcTemplate.call(new CallableStatementCreator() {
+//            @Override
+//            public CallableStatement createCallableStatement(Connection con) throws SQLException {
+////                Array aArray = con.createArrayOf("VARCHAR", panList);
+//                ArrayDescriptor des = ArrayDescriptor.createDescriptor("p_card_nos_in", con);
+//                Array array = new ARRAY(des, con, cardPanList.toArray());
+//                CallableStatement callableStatement = con.prepareCall("{call vmsb2bapi.delete_cards (?, ?)}");
+//                callableStatement.setArray(1, array);
+//                callableStatement.registerOutParameter(2, Types.VARCHAR);
+//                return callableStatement;
+//            }
+//        }, parameters);
+//
+////        String[] panList = cardPanList.stream().toArray(String[]::new);
+////        SimpleJdbcCall jdbcCall =  new SimpleJdbcCall(jdbcTemplate)
+////                .withProcedureName("delete_cards")
+////                .withCatalogName("VMSB2BAPI")
+////                .declareParameters(
+////                        new SqlParameter("p_card_nos_in", OracleTypes.ARRAY, "shuffle_array_typ"),
+////                        new SqlOutParameter("p_resp_msg_out", Types.VARCHAR));
+////
+////        SqlParameterSource in = new MapSqlParameterSource().addValue("p_card_nos_in", cardPanList );
+////        Map<String, Object> simpleJdbcCallResult = jdbcCall.execute(in);
+//        return callResult.get("p_resp_msg_out").toString();
+//    }
 
 //    public String delete(List<String> cardPanList) {
 ////        String outValue;

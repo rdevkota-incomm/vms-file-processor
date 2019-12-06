@@ -79,7 +79,7 @@ public class FileAggregationService {
         // delete records
         if (!summary.getListOfDeletePanCodes().isEmpty()) {
             LOGGER.info("Deleting Pan codes ");
-            deleteCardRepository.delete(summary.getListOfDeletePanCodes());
+            deleteCardRepository.deleteCards(summary.getListOfDeletePanCodes());
         }
         // clean up cache once completed
         completeProcessing(correlationId);

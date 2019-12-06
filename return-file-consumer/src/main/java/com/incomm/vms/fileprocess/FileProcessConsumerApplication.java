@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.incomm.vms.fileprocess.config.Constants.AGGREGATE_SUMMARY_CACHE_KEY;
@@ -51,13 +52,19 @@ public class FileProcessConsumerApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        final SummaryStoreCache retrivedSummary = summaryStoreRepository.findById(AGGREGATE_SUMMARY_CACHE_KEY).get();
-        Gson gson = new Gson();
-        Type summaryStoreType = new TypeToken<ConcurrentHashMap<String, FileAggregateSummary>>() {}.getType();
-        ConcurrentHashMap<String, FileAggregateSummary> cache = gson.fromJson(retrivedSummary.getSummaryStore(), summaryStoreType);
-        FileAggregateSummaryStore.setSummaryStore(cache);
-        LOGGER.info("Got the summary {}", retrivedSummary.getSummaryStore());
-        LOGGER.info("FileProcessConsumerApplication is started!!!! ");
+        try {
+            final SummaryStoreCache retrivedSummary = summaryStoreRepository.findById(AGGREGATE_SUMMARY_CACHE_KEY).get();
+            Gson gson = new Gson();
+            Type summaryStoreType = new TypeToken<ConcurrentHashMap<String, FileAggregateSummary>>() {
+            }.getType();
+            ConcurrentHashMap<String, FileAggregateSummary> cache = gson.fromJson(retrivedSummary.getSummaryStore(), summaryStoreType);
+            FileAggregateSummaryStore.setSummaryStore(cache);
+            LOGGER.info("Got the summary {}", retrivedSummary.getSummaryStore());
+            LOGGER.info("FileProcessConsumerApplication is started!!!! ");
+        } catch (NoSuchElementException e) {
+            LOGGER.debug("Not cache remains in the redis cache");
+        }
+
     }
 
     @Scheduled(fixedDelayString = "${vms.printer-awk-agg.job.frequencyMilliSec}")

@@ -34,6 +34,8 @@ public class ConsumerConfiguration {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         // allows a pool of processes to divide the work of consuming and processing records
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "Printer-Ack-Group");
+        props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, 60000);
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 1);
         // automatically reset the offset to the earliest offset
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");

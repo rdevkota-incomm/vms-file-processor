@@ -42,6 +42,7 @@ public class FileAggregateSummaryStore {
             summary.setFileName(fileName);
             summary.setCompletionTime(getSystemTime());
             summary.setTotalProducedRecordCount(totalRecordCount);
+            summary.setTotalConsumedRecordCount(0);
             return summary;
         });
         syncCache();
