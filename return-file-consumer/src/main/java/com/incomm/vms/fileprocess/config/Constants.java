@@ -11,4 +11,9 @@ public class Constants {
 
     public final static String RETURN_REASON_CACHE_NAME = "RETURN_REASONS_CACHE";
     public final static String AGGREGATE_SUMMARY_CACHE_KEY = "VMS_AGGREGATE_SUMMARY";
+    public final static String CONSUMER_CONTAINER_ID = "printer-awk-id";
+    public final static String CONSUMER_CONTAINER_AGG_ID = "printer-awk-agg-id";
+    public final static String CONSUMER_CONTAINER_GROUP = "printer-awk-group";
+
+
 }

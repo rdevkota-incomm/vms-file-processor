@@ -22,8 +22,10 @@ public class AggregateSchedulerService {
     public void processOrphanedData() {
         LOGGER.info("Looking for orphaned aggregate jobs");
         ConcurrentHashMap<String, FileAggregateSummary> summaryStore = FileAggregateSummaryStore.getAllSummaryStore();
+
         summaryStore.forEach((correlationId, fileAggregateSummary) -> {
             if (System.currentTimeMillis() >= fileAggregateSummary.getCompletionTime() + jobFrequencyInMilliSec) {
+                LOGGER.info("Cleaning up orphaned job for correlation Id: {} and file {}", correlationId, fileAggregateSummary.getFileName());
                 aggregateOrphanedData(correlationId);
             }
         });

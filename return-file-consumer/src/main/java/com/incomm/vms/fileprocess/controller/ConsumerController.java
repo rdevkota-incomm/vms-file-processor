@@ -1,9 +1,10 @@
 package com.incomm.vms.fileprocess.controller;
 
 import com.incomm.vms.fileprocess.cache.FileAggregateSummaryStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
-import org.springframework.kafka.listener.MessageListenerContainer;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,8 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
-@RequestMapping("/consumer")
+@RequestMapping(value = "/consumer", produces = {"application/json"})
 public class ConsumerController {
+    private final static Logger LOGGER = LoggerFactory.getLogger(ConsumerController.class);
     @Autowired
     private KafkaListenerEndpointRegistry kafkaListenerEndpointRegistry;
 
@@ -32,17 +34,25 @@ public class ConsumerController {
 
     @GetMapping("/stop")
     public String stop() {
-        MessageListenerContainer listenerContainer =
-                kafkaListenerEndpointRegistry.getListenerContainer("printer-awk-id");
-        listenerContainer.stop();
+        kafkaListenerEndpointRegistry.getListenerContainers().forEach((container) -> {
+            if (container.isRunning()) {
+                container.stop();
+                LOGGER.info("Container {} is stopped .. ", container.getContainerProperties());
+            }
+        });
         return "Stopped";
     }
 
     @GetMapping("/start")
-    public void start() {
-        MessageListenerContainer listenerContainer =
-                kafkaListenerEndpointRegistry.getListenerContainer("printer-awk-id");
-        listenerContainer.start();
+    public String start() {
+        kafkaListenerEndpointRegistry.getListenerContainers().forEach((container) -> {
+            if (!container.isRunning()) {
+                container.start();
+                LOGGER.info("Container {} is started .. ", container.getContainerProperties());
+            }
+        });
+
+        return "Started";
     }
 
 }

@@ -11,6 +11,7 @@ import com.incomm.vms.fileprocess.service.AggregateSchedulerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -69,7 +70,7 @@ public class FileProcessConsumerApplication implements CommandLineRunner {
 
     @Scheduled(fixedDelayString = "${vms.printer-awk-agg.job.frequencyMilliSec}")
     public void cleanUpJob() {
-        LOGGER.info("Clean up job is being started in every millisecond {}");
+        LOGGER.info("Clean up job is being started in every millisecond {}", "${vms.printer-awk-agg.job.frequencyMilliSec}");
         aggregateSchedulerService.processOrphanedData();
     }
 }
