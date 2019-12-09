@@ -18,7 +18,7 @@ public class ConsumerService extends Thread {
     @Autowired
     private FileAggregationService fileAggregationService;
 
-    @KafkaListener(topics = "${vms.printer-awk.topic}")
+    @KafkaListener(topics = "${vms.printer-awk.topic}", id = "printer-awk-id", containerGroup = "printer-awk-group")
     public void consumeMessage(ConsumerRecord<?, ?> consumerRecord, Acknowledgment acknowledgment) {
         Gson gson = new Gson();
         String payload = consumerRecord.value().toString();;
@@ -28,7 +28,7 @@ public class ConsumerService extends Thread {
         acknowledgment.acknowledge();
     }
 
-    @KafkaListener(topics = "${vms.printer-awk-aggregate.topic}")
+    @KafkaListener(topics = "${vms.printer-awk-aggregate.topic}", id = "printer-awk-agg-id", containerGroup = "printer-awk-group")
     public void consumeAggregateMessage(ConsumerRecord<?, ?> consumerRecord, Acknowledgment acknowledgment) {
         Gson gson = new Gson();
         String payload = consumerRecord.value().toString();
