@@ -2,7 +2,7 @@ package com.incomm.vms.fileprocess.model;
 
 import com.google.gson.Gson;
 
-public class UploadDetail {
+public class FileUploadDetail {
     private String instanceCode;
     private String fileName;
     private int totalRecCount;

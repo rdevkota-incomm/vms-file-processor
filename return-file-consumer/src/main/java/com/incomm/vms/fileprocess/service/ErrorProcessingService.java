@@ -34,7 +34,7 @@ public class ErrorProcessingService {
         returnFileErrorRepository.save(returnFileErrorData);
     }
 
-    public void processNoSerilNumberFoundError(ReturnFileDTO returnFileRecord, String fileName) {
+    public void processSerilNumberNotFoundError(ReturnFileDTO returnFileRecord, String fileName) {
         ReturnFileErrorData returnFileErrorData = new ReturnFileErrorData();
         returnFileErrorData.setFileName(fileName);
         returnFileErrorData.setParentOrderId(returnFileRecord.getParentOrderId());

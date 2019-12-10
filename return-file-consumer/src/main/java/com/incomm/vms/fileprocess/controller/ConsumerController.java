@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.incomm.vms.fileprocess.config.Constants.CONSUMER_CONTAINER_AGG_ID;
+
 @RestController
 @RequestMapping(value = "/consumer", produces = {"application/json"})
 public class ConsumerController {

@@ -1,7 +1,7 @@
 package com.incomm.vms.fileprocess.service;
 
-import com.incomm.vms.fileprocess.model.RejectReasonMaster;
 import com.incomm.vms.fileprocess.model.LineItemDetail;
+import com.incomm.vms.fileprocess.model.RejectReasonMaster;
 import com.incomm.vms.fileprocess.model.ReturnFileDTO;
 import com.incomm.vms.fileprocess.repository.CardIssuanceStatusRepository;
 import com.incomm.vms.fileprocess.repository.DeleteCardRepository;
@@ -15,17 +15,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 
-import static com.incomm.vms.fileprocess.config.Constants.FILE_NAME;
-import static com.incomm.vms.fileprocess.config.Constants.RECORD_NUMBER;
+import static com.incomm.vms.fileprocess.config.Constants.*;
 
 @Service
 public class DataProcessingService {
     private final static Logger LOGGER = LoggerFactory.getLogger(DataProcessingService.class);
+    public static final String SUCCESS_FLAG = "Y";
+
     @Autowired
     private ErrorProcessingService errorProcessingService;
     @Autowired
@@ -53,34 +54,38 @@ public class DataProcessingService {
     public void processRecords(ReturnFileDTO returnFileRecord) {
         Map<String, String> messageHeaders = returnFileRecord.getHeaders();
         String fileName = messageHeaders.get(FILE_NAME);
-        LOGGER.info("File with name: {} ", fileName);
-        LineItemDetail lineItemDetail = null;
-        try {
-            lineItemDetail = lineItemDetailRepository.findLineItem(instanceCode, returnFileRecord.getSerialNumber());
-        } catch (BadSqlGrammarException e) {
-            LOGGER.error("Bad syntax error for lineItemDetail query {}", e.getSql(), e);
-        }
-        if (lineItemDetail == null) {
-            errorProcessingService.processNoSerilNumberFoundError(returnFileRecord, fileName);
+        String correlationId = messageHeaders.get(CORRELATION_ID);
+        String recordNumber = messageHeaders.get(RECORD_NUMBER);
+
+        LOGGER.info("Processing record for file: {}  correlationId {}", fileName, correlationId);
+
+        Optional<LineItemDetail> lineItemDetail = lineItemDetailRepository.findLineItem(instanceCode, returnFileRecord.getSerialNumber());
+
+        if (!lineItemDetail.isPresent()) {
+            errorProcessingService.processSerilNumberNotFoundError(returnFileRecord, fileName);
             fileAggregationService.addConsumerCountForFailedRecord(messageHeaders);
         } else {
-            String panCode = lineItemDetail.getPanCode();
-            boolean deletePanCode = false;
+            String panCode = lineItemDetail.get().getPanCode();
             RejectReasonMaster fileProcessReason = fileProcessReasonRepository.findByRejectReason(returnFileRecord.getRejectReason());
             lineItemDetailRepository.update(returnFileRecord.getSerialNumber(), panCode, fileProcessReason);
 
-            if ("Y".equalsIgnoreCase(fileProcessReason.getSuccessFailureFlag())) {
+            if (SUCCESS_FLAG.equalsIgnoreCase(fileProcessReason.getSuccessFailureFlag())) {
                 cardIssuanceStatusRepository.update(instanceCode, panCode);
-            } else if (!"Y".equalsIgnoreCase(fileProcessReason.getSuccessFailureFlag()) &&
-                    !lineItemDetail.getPartnerId().equalsIgnoreCase("Replace_Partner_ID")) {
-                deletePanCode = true;
-                LOGGER.info("Received message from delete card : {} ", panCode);
             }
 
-            returnFileDataRepository.save(instanceCode, fileName, messageHeaders.get(RECORD_NUMBER), returnFileRecord,
-                    lineItemDetail);
+            returnFileDataRepository.save(instanceCode, fileName, recordNumber, returnFileRecord, lineItemDetail.get());
+
+            boolean deletePanCode = isDeletePanCode(lineItemDetail, fileProcessReason);
             fileAggregationService.saveConsumedDetail(panCode, deletePanCode, messageHeaders);
-         }
-        LOGGER.info("Done processing");
+        }
+        LOGGER.info("Done processing message filename: {} recordNumber: {} correlationId: {} ", fileName, recordNumber, correlationId);
+    }
+
+    private boolean isDeletePanCode(Optional<LineItemDetail> lineItemDetail, RejectReasonMaster fileProcessReason) {
+        if (!SUCCESS_FLAG.equalsIgnoreCase(fileProcessReason.getSuccessFailureFlag()) &&
+                !lineItemDetail.get().getPartnerId().equalsIgnoreCase("Replace_Partner_ID")) {
+            return true;
+        }
+        return false;
     }
 }

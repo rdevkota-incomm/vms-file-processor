@@ -1,6 +1,6 @@
 package com.incomm.vms.fileprocess.repository;
 
-import com.incomm.vms.fileprocess.model.UploadDetail;
+import com.incomm.vms.fileprocess.model.FileUploadDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ public class UploadDetailRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public int save(UploadDetail uploadDetail) {
+    public int save(FileUploadDetail fileUploadDetail) {
         String sql = " INSERT INTO vms_return_fileupload_dtls ( "
                 + " VRF_INST_CODE, VRF_FILE_NAME, VRF_TOTAL_RECCOUNT, "
                 + " VRF_SUCCESS_RECCOUNT, VRF_FAILURE_RECCOUNT, "
@@ -22,20 +22,20 @@ public class UploadDetailRepository {
                 + " VRF_INS_USER , VRF_INS_DATE, VRF_LUPD_USER, VRF_LUPD_DATE) "
                 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, SYSDATE, ? , SYSDATE) ";
         LOGGER.debug("Save sql being executed \n {}", sql);
-        LOGGER.debug("Save sql Values:\n {}", uploadDetail.toString());
+        LOGGER.debug("Save sql Values:\n {}", fileUploadDetail.toString());
         return jdbcTemplate.update(sql,
-                uploadDetail.getInstanceCode(), uploadDetail.getFileName(),
-                uploadDetail.getTotalRecCount(), uploadDetail.getSuccessRecCount(),
-                uploadDetail.getFailureRecCount(), uploadDetail.getFailureDesc(),
-                uploadDetail.getFileStatus(), uploadDetail.getUser(), uploadDetail.getUser());
+                fileUploadDetail.getInstanceCode(), fileUploadDetail.getFileName(),
+                fileUploadDetail.getTotalRecCount(), fileUploadDetail.getSuccessRecCount(),
+                fileUploadDetail.getFailureRecCount(), fileUploadDetail.getFailureDesc(),
+                fileUploadDetail.getFileStatus(), fileUploadDetail.getUser(), fileUploadDetail.getUser());
     }
 
-    public int update(UploadDetail uploadDetail) {
+    public int update(FileUploadDetail fileUploadDetail) {
 
         return 0;
     }
 
-    public UploadDetail findByFileName(String filename) {
+    public FileUploadDetail findByFileName(String filename) {
         return null;
     }
 }

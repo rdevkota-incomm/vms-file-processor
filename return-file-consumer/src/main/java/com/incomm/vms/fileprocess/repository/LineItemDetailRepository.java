@@ -1,7 +1,7 @@
 package com.incomm.vms.fileprocess.repository;
 
-import com.incomm.vms.fileprocess.model.RejectReasonMaster;
 import com.incomm.vms.fileprocess.model.LineItemDetail;
+import com.incomm.vms.fileprocess.model.RejectReasonMaster;
 import com.incomm.vms.fileprocess.model.ReturnFileDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +11,8 @@ import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class LineItemDetailRepository {
     private final static Logger LOGGER = LoggerFactory.getLogger(LineItemDetailRepository.class);
@@ -18,7 +20,8 @@ public class LineItemDetailRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public LineItemDetail findLineItem(String instanceCode, String serialNumber) throws BadSqlGrammarException {
+    public Optional<LineItemDetail> findLineItem(String instanceCode, String serialNumber) throws BadSqlGrammarException {
+        LineItemDetail detail = null;
         String sql = " SELECT  cap_pan_code, vli_partner_id, vli_parent_oid, vli_order_id, vli_lineitem_id"
                 + " FROM ( SELECT  pan.cap_pan_code, lineitem.vli_partner_id,lineitem.vli_parent_oid,"
                 + " lineitem.vli_order_id, lineitem.vli_lineitem_id"
@@ -35,7 +38,7 @@ public class LineItemDetailRepository {
         LOGGER.debug("Select sql Parameter Values for serialNumber: {} instanceCode: {}",
                 serialNumber, instanceCode);
         try {
-            return jdbcTemplate.queryForObject(sql, new Object[]{instanceCode, serialNumber},
+            detail = jdbcTemplate.queryForObject(sql, new Object[]{instanceCode, serialNumber},
                     (rs, rowNum) -> {
                         LineItemDetail lineItemDetail = new LineItemDetail();
                         lineItemDetail.setPanCode(rs.getString(1));
@@ -50,9 +53,11 @@ public class LineItemDetailRepository {
             LOGGER.debug("There is no record returned by the sql: {} ", sql);
             LOGGER.debug("Select sql Parameter Values for serialNumber: {} instanceCode: {}",
                     serialNumber, instanceCode);
-
+        } catch (BadSqlGrammarException e) {
+            LOGGER.error("Bad syntax error for lineItemDetail query {} ", e.getSql(), e);
         }
-        return null;
+
+        return Optional.ofNullable(detail);
     }
 
     public int update(String serialNUmber, String panCode, RejectReasonMaster fileProcessReason) {

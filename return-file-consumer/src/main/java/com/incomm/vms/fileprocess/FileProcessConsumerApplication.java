@@ -1,7 +1,6 @@
 package com.incomm.vms.fileprocess;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.incomm.vms.fileprocess.cache.FileAggregateSummaryStore;
 import com.incomm.vms.fileprocess.model.FileAggregateSummary;
@@ -11,7 +10,6 @@ import com.incomm.vms.fileprocess.service.AggregateSchedulerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,7 +22,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.lang.reflect.Type;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentHashMap;
 
